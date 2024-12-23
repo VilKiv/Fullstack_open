@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Person from './components/Person'
+import FilterForm from './components/FilterForm'
+import PersonForm from './components/PersonForm'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -8,7 +10,7 @@ const App = () => {
     { name: 'Dan Abramov', number: '12-43-234345' },
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ])
-  
+
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
@@ -27,6 +29,7 @@ const App = () => {
       number: newNumber
     }
     setPersons(persons.concat(personObject))
+    setNewNumber('')
     setNewName('')
   }
 
@@ -42,43 +45,26 @@ const App = () => {
     setSearchQuery(event.target.value)
   }
 
+  
   const filteredWithQuery = () => {
-    return searchQuery.lenght === 0
-          ? persons
-          : persons.filter((person) => {
-            person.name.toLowerCase().includes(searchQuery.toLowerCase())
-          })
+    const filteredPersons = searchQuery.length === 0 
+          ? persons 
+          : persons.filter((person) => { return person.name.toLowerCase().includes(searchQuery.toLowerCase()) })
+    return filteredPersons
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-      <div>
-          filter shown with <input
-            value={searchQuery}
-            onChange={handleQueryChange}
-          />
-        </div>
-      </form>
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input
-            value={newName}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>
-          number: <input
-            value={newNumber}
-            onChange={handleNumberChange}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <FilterForm searchQuery={searchQuery} handleQueryChange={handleQueryChange} />
+      <h2>Add a new</h2>
+      <PersonForm 
+        addPerson={addPerson} 
+        newName={newName} 
+        newNumber={newNumber}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+      />
       <h2>Numbers</h2>
 
       {filteredWithQuery().map((person) => 
