@@ -21,11 +21,11 @@ const Content = (props) => {
 }
 
 const Total = (props) => {
-  return (
-    <>
-      <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>
-    </>
-  )
+  let totalNumberOfExercises = 0
+  props.parts.forEach((part) => {
+    totalNumberOfExercises += part.exercises
+  })
+  return <p><b>total of exercises {totalNumberOfExercises}</b></p>
 }
 
 const Course = (props) => {
@@ -33,7 +33,7 @@ const Course = (props) => {
     <>
       <Header course={props.course.name} />
       <Content parts={props.course.parts} />
-      {/* <Total parts={props.course.parts} /> */}
+      <Total parts={props.course.parts} />
     </>
   )
 }
@@ -66,6 +66,5 @@ const App = () => {
     </div>
   )
 }
-
 
 export default App
