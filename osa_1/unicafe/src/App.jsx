@@ -14,6 +14,20 @@ const Button = (props) => (
   </button>
 )
 
+const Statistics = (props) => {
+  return (
+    <>
+      <Title title = {"statistics"}/>
+      <Display text="good" value={props.statistics.good}/>
+      <Display text="neutral" value={props.statistics.neutral}/>
+      <Display text="bad" value={props.statistics.bad}/>
+      <Display text="all" value={props.statistics.numberOfReviews} />
+      <Display text="Average" value={props.statistics.calculateAverage} />
+      <Display text="positive" value={props.statistics.positivePercentage} />
+    </>
+  )
+}
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
@@ -51,19 +65,22 @@ const App = () => {
     return (`${good * 100 / numberOfReviews()} %`)
   }
 
+  const statistics = {
+    good: good,
+    neutral: neutral,
+    bad: bad,
+    numberOfReviews: numberOfReviews(),
+    calculateAverage: calculateAverage(),
+    positivePercentage: positivePercentage()
+  }
+
   return (
     <div>
       <Title title = {"give feedback"}/>
       <Button handleClick={handleGoodClick} text="good" />
       <Button handleClick={handleNeutralClick} text="neutral" />
       <Button handleClick={handleBadClick} text="bad" />
-      <Title title = {"statistics"}/>
-      <Display text="good" value={good}/>
-      <Display text="neutral" value={neutral}/>
-      <Display text="bad" value={bad}/>
-      <Display text="all" value={numberOfReviews()} />
-      <Display text="Average" value={calculateAverage()} />
-      <Display text="positive" value={positivePercentage()} />
+      <Statistics statistics={statistics} />
     </div>
   )
 }
