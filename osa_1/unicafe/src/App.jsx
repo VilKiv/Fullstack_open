@@ -6,7 +6,7 @@ const Title = (props) => {
   )
 }
 
-const Display = props => <div>{props.text} {props.value}</div>
+const StatisticLine = props => <div>{props.text} {props.value}</div>
 
 const Button = (props) => (
   <button onClick={props.handleClick}>
@@ -21,19 +21,18 @@ const Statistics = (props) => {
         <Title title = {"statistics"}/>
         <p>No feedback given</p>
       </>
-
     ) 
   }
 
   return (
     <>
       <Title title = {"statistics"}/>
-      <Display text="good" value={props.statistics.good}/>
-      <Display text="neutral" value={props.statistics.neutral}/>
-      <Display text="bad" value={props.statistics.bad}/>
-      <Display text="all" value={props.statistics.numberOfReviews} />
-      <Display text="Average" value={props.statistics.calculateAverage} />
-      <Display text="positive" value={props.statistics.positivePercentage} />
+      <StatisticLine text="good" value={props.statistics.good}/>
+      <StatisticLine text="neutral" value={props.statistics.neutral}/>
+      <StatisticLine text="bad" value={props.statistics.bad}/>
+      <StatisticLine text="all" value={props.statistics.numberOfReviews} />
+      <StatisticLine text="Average" value={props.statistics.calculateAverage} />
+      <StatisticLine text="positive" value={props.statistics.positivePercentage} />
     </>
   )
 }
