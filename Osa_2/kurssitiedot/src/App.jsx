@@ -20,12 +20,9 @@ const Content = (props) => {
   )
 }
 
-const Total = (props) => {
-  let totalNumberOfExercises = 0
-  props.parts.forEach((part) => {
-    totalNumberOfExercises += part.exercises
-  })
-  return <p><b>total of exercises {totalNumberOfExercises}</b></p>
+const Total = ({parts}) => {
+  const total = parts.reduce((accumulator,current) => accumulator + current.exercises,0) 
+  return <p><b>total of exercises {total}</b></p>
 }
 
 const Course = (props) => {
