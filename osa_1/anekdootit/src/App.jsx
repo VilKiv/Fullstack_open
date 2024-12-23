@@ -13,6 +13,12 @@ const App = () => {
     setSelected(index)
   }
 
+  const addVote = () => {
+    const newVotes = {...points}
+    newVotes[selected] += 1
+    setPoints(newVotes)
+  }
+
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -25,11 +31,14 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [points,setPoints] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5:0, 6:0, 7:0 })
 
   return (
     <div>
       {anecdotes[selected]}
+      <p>Has {points[selected]} votes</p>
       <br />
+      <Button handleClick={addVote} text="vote" />
       <Button handleClick={pickAnecdote} text="next anecdote" />
     </div>
   )
