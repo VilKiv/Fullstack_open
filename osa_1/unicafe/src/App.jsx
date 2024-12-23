@@ -15,6 +15,16 @@ const Button = (props) => (
 )
 
 const Statistics = (props) => {
+  if (props.statistics.numberOfReviews===0) {
+    return (
+      <>
+        <Title title = {"statistics"}/>
+        <p>No feedback given</p>
+      </>
+
+    ) 
+  }
+
   return (
     <>
       <Title title = {"statistics"}/>
@@ -57,8 +67,8 @@ const App = () => {
   }
 
   const calculateAverage = () => {
-    const cumatedReviews = good - bad
-    return cumatedReviews / numberOfReviews()
+    const cumulatedReviews = good - bad
+    return cumulatedReviews / numberOfReviews()
   }
 
   const positivePercentage = () => {
