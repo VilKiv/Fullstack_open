@@ -3,25 +3,36 @@ import Person from './components/Person'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas',
+      number: '040-1231244'
+    }
   ]) 
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const addPerson = (event) => {
-    event.preventDefault()
-    if (persons.some((person) => person.name === newName)) {
+    event.preventDefault() 
+    if (newName.length === 0) {
+      window.alert('Name shouldn\'t be empty!')
+      return
+    } else if (persons.some((person) => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`)
       return
     }
     const personObject = {
-      name: newName
+      name: newName,
+      number: newNumber
     }
     setPersons(persons.concat(personObject))
     setNewName('')
   }
 
-  const handlePersonChange = (event) => {
+  const handleNameChange = (event) => {
     setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
   }
 
   return (
@@ -31,7 +42,13 @@ const App = () => {
         <div>
           name: <input
             value={newName}
-            onChange={handlePersonChange}
+            onChange={handleNameChange}
+          />
+        </div>
+        <div>
+          number: <input
+            value={newNumber}
+            onChange={handleNumberChange}
           />
         </div>
         <div>
@@ -45,7 +62,6 @@ const App = () => {
       )}
     </div>
   )
-
 }
 
 export default App
