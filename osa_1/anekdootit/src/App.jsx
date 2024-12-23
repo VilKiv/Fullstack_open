@@ -6,6 +6,12 @@ const Button = (props) => (
   </button>
 )
 
+const Title = (props) => {
+  return (
+    <h1>{props.title}</h1>
+  )
+}
+
 const App = () => {
 
   const pickAnecdote = () => {
@@ -15,8 +21,14 @@ const App = () => {
 
   const addVote = () => {
     const newVotes = {...points}
-    newVotes[selected] += 1
+    const newNumberOfVotes = newVotes[selected] + 1
+    newVotes[selected] = newNumberOfVotes
     setPoints(newVotes)
+
+    if (newNumberOfVotes > mostVoted.votes) {
+      const newMostVoted = {index:selected,votes:newNumberOfVotes}
+      setMostVoted(newMostVoted)
+    }
   }
 
   const anecdotes = [
@@ -32,14 +44,19 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [points,setPoints] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5:0, 6:0, 7:0 })
+  const [mostVoted,setMostVoted] = useState({index:0,votes:0})
 
   return (
-    <div>
-      {anecdotes[selected]}
-      <p>Has {points[selected]} votes</p>
+      <div>
+      <Title title = {"Anecdote of the day"}/>
+      {anecdotes[selected]} <br/>
+      has {points[selected]} votes
       <br />
       <Button handleClick={addVote} text="vote" />
       <Button handleClick={pickAnecdote} text="next anecdote" />
+      <Title title = {"Most voted anecdote"}/>
+      {anecdotes[mostVoted.index]} <br/>
+      has {mostVoted.votes} votes
     </div>
   )
 }
