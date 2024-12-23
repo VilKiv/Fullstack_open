@@ -20,11 +20,6 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const setToValue = (newValue) => {
-    console.log('value now', newValue)
-    setValue(newValue)
-  }
-
   const handleGoodClick = () => {
     const newGood = good + 1
     //console.log(newGood)
@@ -43,16 +38,32 @@ const App = () => {
     setNeutral(newNeutral)
   }
 
+  const numberOfReviews = () => {
+    return good + bad + neutral
+  }
+
+  const calculateAverage = () => {
+    const cumatedReviews = good - bad
+    return cumatedReviews / numberOfReviews()
+  }
+
+  const positivePercentage = () => {
+    return (`${good * 100 / numberOfReviews()} %`)
+  }
+
   return (
     <div>
       <Title title = {"give feedback"}/>
       <Button handleClick={handleGoodClick} text="good" />
-      <Button handleClick={handleBadClick} text="neutral" />
-      <Button handleClick={handleNeutralClick} text="bad" />
+      <Button handleClick={handleNeutralClick} text="neutral" />
+      <Button handleClick={handleBadClick} text="bad" />
       <Title title = {"statistics"}/>
       <Display text="good" value={good}/>
       <Display text="neutral" value={neutral}/>
       <Display text="bad" value={bad}/>
+      <Display text="all" value={numberOfReviews()} />
+      <Display text="Average" value={calculateAverage()} />
+      <Display text="positive" value={positivePercentage()} />
     </div>
   )
 }
