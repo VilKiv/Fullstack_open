@@ -1,26 +1,22 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 import Person from './components/Person'
 import FilterForm from './components/FilterForm'
 import PersonForm from './components/PersonForm'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {    
-    console.log('effect')    
-    axios      
-      .get('http://localhost:3001/persons')      
-      .then(response => {        
-        console.log('promise fulfilled')        
-        setPersons(response.data)      
-      }) 
-  }, [])  
-  console.log('render', persons.length, 'notes')
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault() 
@@ -33,11 +29,16 @@ const App = () => {
     }
     const personObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: newName
     }
-    setPersons(persons.concat(personObject))
-    setNewNumber('')
-    setNewName('')
+    personService
+      .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewNumber('')
+          setNewName('')
+        })
   }
 
   const handleNameChange = (event) => {
@@ -55,7 +56,10 @@ const App = () => {
   const filteredWithQuery = () => {
     const filteredPersons = searchQuery.length === 0 
           ? persons 
-          : persons.filter((person) => { return person.name.toLowerCase().includes(searchQuery.toLowerCase()) })
+          : persons.filter((person) => { 
+              return person.name.toLowerCase()
+                .includes(searchQuery.toLowerCase()) 
+            })
     return filteredPersons
   }
 
