@@ -32,6 +32,7 @@ const App = () => {
       number: newNumber,
       id: newName
     }
+
     personService
       .create(personObject)
         .then(returnedPerson => {
@@ -39,6 +40,24 @@ const App = () => {
           setNewNumber('')
           setNewName('')
         })
+  }
+
+  const deletePerson = (id) => {
+    const person = persons.find(n => n.id === id)
+    if (!window.confirm(`Do you want to delete ${person.name}?`)) {
+      return
+    }
+    personService
+      .deletePerson(id)
+      .then((deletedPerson) => {
+        setPersons(persons.filter(n => n.id !== deletedPerson.id))
+      })
+      .catch(error => {
+        alert(
+          `the person '${person.name}' was already deleted from server`
+        )
+        setPersons(persons.filter(n => n.id !== id))
+      })
   }
 
   const handleNameChange = (event) => {
@@ -78,7 +97,12 @@ const App = () => {
       <h2>Numbers</h2>
 
       {filteredWithQuery().map((person) => 
-        <Person key={person.name} person={person} />
+        <Person 
+        key={person.name} 
+        person={person} 
+        deletePerson={() => deletePerson(person.id)}
+        />
+      
       )}
     </div>
   )
