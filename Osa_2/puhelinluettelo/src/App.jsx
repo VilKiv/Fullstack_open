@@ -19,12 +19,21 @@ const App = () => {
   }, [])
 
   const addPerson = (event) => {
-    event.preventDefault() 
+    event.preventDefault()
     if (newName.length === 0) {
       window.alert('Name shouldn\'t be empty!')
       return
-    } else if (persons.some((person) => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+    }
+    const oldInstance = persons.find((person) => person.name === newName)
+    if (oldInstance) {
+      if (!window.confirm(
+        `${newName} is already added to phonebook, replace the old number with the new one?`
+        )) {
+          return
+      }
+      updateNumber(oldInstance)
+      setNewName('')
+      setNewNumber('')
       return
     }
     const personObject = {
@@ -32,14 +41,28 @@ const App = () => {
       number: newNumber,
       id: newName
     }
-
     personService
       .create(personObject)
-        .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
-          setNewNumber('')
-          setNewName('')
-        })
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewNumber('')
+        setNewName('')
+      })
+  }
+
+  const updateNumber = (oldInstance) => {
+    const updatedPerson = { ...oldInstance, number: newNumber }
+    personService
+      .update(oldInstance.id, updatedPerson)
+      .then(returnedPerson => {
+        setPersons(persons.map(person => person.id != returnedPerson.id ? person : returnedPerson))
+      })
+      .catch(error => {
+        alert(
+          `the person '${oldInstance.name}' was already deleted from server`
+        )
+        setNotes(notes.filter(n => n.id !== oldInstance.id))
+      })
   }
 
   const deletePerson = (id) => {
@@ -73,36 +96,39 @@ const App = () => {
   }
 
   const filteredWithQuery = () => {
-    const filteredPersons = searchQuery.length === 0 
-          ? persons 
-          : persons.filter((person) => { 
-              return person.name.toLowerCase()
-                .includes(searchQuery.toLowerCase()) 
-            })
+    const filteredPersons = searchQuery.length === 0
+      ? persons
+      : persons.filter((person) => {
+        return person.name.toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      })
     return filteredPersons
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <FilterForm searchQuery={searchQuery} handleQueryChange={handleQueryChange} />
+      <FilterForm 
+        searchQuery={searchQuery} 
+        handleQueryChange={handleQueryChange} 
+      />
       <h2>Add a new</h2>
-      <PersonForm 
-        addPerson={addPerson} 
-        newName={newName} 
+      <PersonForm
+        addPerson={addPerson}
+        newName={newName}
         newNumber={newNumber}
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
 
-      {filteredWithQuery().map((person) => 
-        <Person 
-        key={person.name} 
-        person={person} 
-        deletePerson={() => deletePerson(person.id)}
+      {filteredWithQuery().map((person) =>
+        <Person
+          key={person.name}
+          person={person}
+          deletePerson={() => deletePerson(person.id)}
         />
-      
+
       )}
     </div>
   )
