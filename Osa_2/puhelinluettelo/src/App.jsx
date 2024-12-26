@@ -23,10 +23,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     if (newName.length === 0) {
-      setNotification({active:true,message:'Name shouldn\'t be empty!',color:'red'})
-        setTimeout(() => {          
-          setNotification({...notification, active:false})        
-        }, 3000)
+      handleNotification('Name shouldn\'t be empty!', 'red')
       return
     }
     const oldInstance = persons.find((person) => person.name === newName)
@@ -37,10 +34,7 @@ const App = () => {
           return
       }
       updateNumber(oldInstance)
-      setNotification({active:true,message:`The number of ${oldInstance.name} was updated`,color:'green'})
-        setTimeout(() => {          
-          setNotification({...notification, active:false})        
-        }, 3000)
+      handleNotification(`The number of ${oldInstance.name} was updated`,'green')
       setNewName('')
       setNewNumber('')
       return
@@ -54,10 +48,7 @@ const App = () => {
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-        setNotification({active:true,message:`Added ${newName}`,color:'green'})
-        setTimeout(() => {          
-          setNotification({...notification, active:false})        
-        }, 3000)
+        handleNotification(`Added ${newName}`,'green')
         setNewNumber('')
         setNewName('')
       })
@@ -71,13 +62,8 @@ const App = () => {
         setPersons(persons.map(person => person.id != returnedPerson.id ? person : returnedPerson))
       })
       .catch(error => {
-        setNotification({active:true,
-                        message:`the person '${oldInstance.name}' was already deleted from server`,
-                        color:'red'})
-        setTimeout(() => {          
-          setNotification({...notification, active:false})        
-        }, 3000)
-        setNotes(notes.filter(n => n.id !== oldInstance.id))
+        handleNotification(`the person '${oldInstance.name}' was already deleted from server`,'red')
+        setPersons(persons.filter(n => n.id !== oldInstance.id))
       })
   }
 
@@ -89,23 +75,22 @@ const App = () => {
     personService
       .deletePerson(id)
       .then((deletedPerson) => {
-        setNotification({active:true,
-          message:`Deleted ${person.name}`,
-          color:'green'})
-        setTimeout(() => {          
-          setNotification({...notification, active:false})        
-        }, 3000)
+        handleNotification(`Deleted ${person.name}`,'green')
         setPersons(persons.filter(n => n.id !== deletedPerson.id))
       })
       .catch(error => {
-        setNotification({active:true,
-          message:`the person '${oldInstance.name}' was already deleted from server`,
-          color:'red'})
-        setTimeout(() => {          
-          setNotification({...notification, active:false})        
-        }, 3000)
+        handleNotification(`the person '${person.name}' was already deleted from server`,'red')
         setPersons(persons.filter(n => n.id !== id))
       })
+  }
+
+  const handleNotification = (message,color) => {
+    setNotification({active:true,
+                    message:message,
+                    color:color})
+    setTimeout(() => {          
+      setNotification({...notification, active:false})        
+    }, 3000)
   }
 
   const handleNameChange = (event) => {
@@ -142,6 +127,7 @@ const App = () => {
         searchQuery={searchQuery} 
         handleQueryChange={handleQueryChange} 
       />
+
       <h2>Add a new</h2>
       <PersonForm
         addPerson={addPerson}
@@ -150,8 +136,8 @@ const App = () => {
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       />
-      <h2>Numbers</h2>
 
+      <h2>Numbers</h2>
       {filteredWithQuery().map((person) =>
         <Person
           key={person.name}
