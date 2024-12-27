@@ -11,12 +11,19 @@ const App = () => {
     countryService
       .getAllCountries()
       .then(initialCountries => {
-        setCountries(initialCountries)
+        setCountries(initialCountries.map((country) => {return {...country,show:false}}))
       })
   }, [])
 
   const handleQueryChange = (event) => {
     setQuery(event.target.value)
+  }
+
+  const toggleDetails = (countryId) => {
+    const countriesCopy = [...countries]
+    const toggledCountry = countriesCopy.find(n => n.cca3 === countryId)
+    toggledCountry.show = !toggledCountry.show
+    setCountries(countriesCopy)
   }
 
   const filteredWithQuery = () => {
@@ -38,7 +45,8 @@ const App = () => {
         handleQueryChange={handleQueryChange}
       />
       <Countries 
-        countries={filteredCountries} 
+        countries={filteredCountries}
+        toggleDetails={toggleDetails}
       />
     </div>
   )
